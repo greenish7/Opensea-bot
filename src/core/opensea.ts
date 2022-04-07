@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { config } from '../../config';
 import { OpenSeaPort, Network } from 'opensea-js';
-import Web3, { Modules } from 'web3';
+import * as Web3 from 'web3';
 import { WyvernSchemaName } from 'opensea-js/lib/types';
 
 /**
@@ -20,7 +20,11 @@ class OpenSea {
   constructor() {
     this.baseurl = 'https://api.opensea.io/api/v1';
     this.network = config.TEST_NETWORK ? Network.Rinkeby : Network.Main;
-    let provider = new Web3.providers.HttpProvider(
+    let provider = new Web3.default.providers.HttpProvider(
+      //   config.PRIVATE_KEY.startsWith('0x')
+      //     ? config.PRIVATE_KEY
+      //     : `0x${config.PRIVATE_KEY}`,
+      // ],
       config.TEST_NETWORK
         ? 'https://rinkeby.infura.io/v3/' + config.INFURA_API_KEY
         : 'https://mainnet.infura.io/v3/' + config.INFURA_API_KEY
@@ -28,7 +32,7 @@ class OpenSea {
 
     this.seaport = new OpenSeaPort(provider, {
       networkName: this.network,
-      apiKey: config.OPENSEA_API_KEY,
+      // apiKey: config.OPENSEA_API_KEY,
     });
   }
 
@@ -41,20 +45,24 @@ class OpenSea {
     if (!url) {
       throw new Error('url is required');
     }
+    console.log({
+      url,
+    });
 
     try {
+      const slug = url.split('/').pop();
       const { data } = await axios({
         method: 'GET',
-        url: `${this.baseurl}${url}`,
+        url: `${this.baseurl}/collection/${slug}`,
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          'X-API-KEY': config.OPENSEA_API_KEY,
+          // 'X-API-KEY': config.OPENSEA_API_KEY,
         },
       });
       console.log({ data });
       return data;
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       throw new Error(error);
     }
@@ -73,7 +81,7 @@ class OpenSea {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          'X-API-KEY': config.OPENSEA_API_KEY,
+          // 'X-API-KEY': config.OPENSEA_API_KEY,
         },
         params: {
           page,
@@ -81,9 +89,8 @@ class OpenSea {
           asset_owner,
         },
       });
-      console.log({ data });
       return data;
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       throw new Error(error);
     }
@@ -103,25 +110,24 @@ class OpenSea {
     tokenId: string,
     tokenAddress: string,
     startAmount: number,
-    accountAddress: string,
-    schemaName?: WyvernSchemaName
+    accountAddress: string = config.PUBLIC_KEY,
+    schemaName: WyvernSchemaName = WyvernSchemaName.ERC721,
+    expirationTime: number = Math.round(Date.now() / 1000 + 60 * 60 * 24) // One day from now
   ) => {
     try {
       const asset = {
         tokenId,
         tokenAddress,
         schemaName,
-        accountAddress,
       };
-      const offer = await this.seaport.createBuyOrder({
-        asset,
-        accountAddress,
-        startAmount,
-        // Optional expiration time for the order, in Unix time (seconds):
-        expirationTime: Math.round(Date.now() / 1000 + 60 * 60 * 24), // One day from now
-      });
-      return offer;
-    } catch (error) {
+      // const offer = await this.seaport.createBuyOrder({
+      //   asset,
+      //   accountAddress,
+      //   startAmount,
+      //   expirationTime,
+      // });
+      // return offer;
+    } catch (error: any) {
       console.error(error);
       throw new Error(error);
     }
@@ -141,7 +147,7 @@ class OpenSea {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          'X-API-KEY': config.OPENSEA_API_KEY,
+          // 'X-API-KEY': config.OPENSEA_API_KEY,
         },
         params: {
           limit,
@@ -149,7 +155,7 @@ class OpenSea {
       });
       console.log({ data });
       return data;
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       throw new Error(error);
     }
@@ -168,12 +174,12 @@ class OpenSea {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          'X-API-KEY': config.OPENSEA_API_KEY,
+          // 'X-API-KEY': config.OPENSEA_API_KEY,
         },
       });
       console.log({ data });
       return data;
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       throw new Error(error);
     }

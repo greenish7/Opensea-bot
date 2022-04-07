@@ -6,3 +6,5 @@ const Main = async () => {
   console.info(`- - -`.repeat(10));
   await zeroXMNIWrapper.start();
 };
+
+Main();
