@@ -1,8 +1,13 @@
 import axios from 'axios';
-import { config } from '../../config';
+import { config } from '../../../config';
 import { OpenSeaPort, Network } from 'opensea-js';
 import * as Web3 from 'web3';
 import { WyvernSchemaName } from 'opensea-js/lib/types';
+
+/// @dev sleep function
+export const sleep = async (ms: number) => {
+  await new Promise((resolve) => setTimeout(resolve, ms));
+};
 
 /**
  * @title OpenSea
@@ -14,7 +19,7 @@ import { WyvernSchemaName } from 'opensea-js/lib/types';
  */
 class OpenSea {
   baseurl: string;
-  seaport: OpenSeaPort;
+  client: OpenSeaPort;
   network: Network;
 
   constructor() {
@@ -30,9 +35,9 @@ class OpenSea {
         : 'https://mainnet.infura.io/v3/' + config.INFURA_API_KEY
     );
 
-    this.seaport = new OpenSeaPort(provider, {
+    this.client = new OpenSeaPort(provider, {
       networkName: this.network,
-      // apiKey: config.OPENSEA_API_KEY,
+      apiKey: config.OPENSEA_API_KEY,
     });
   }
 
@@ -81,7 +86,7 @@ class OpenSea {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          // 'X-API-KEY': config.OPENSEA_API_KEY,
+          'X-API-KEY': config.OPENSEA_API_KEY,
         },
         params: {
           page,
@@ -120,13 +125,13 @@ class OpenSea {
         tokenAddress,
         schemaName,
       };
-      // const offer = await this.seaport.createBuyOrder({
-      //   asset,
-      //   accountAddress,
-      //   startAmount,
-      //   expirationTime,
-      // });
-      // return offer;
+      const offer = await this.client.createBuyOrder({
+        asset,
+        accountAddress,
+        startAmount,
+        expirationTime,
+      });
+      return offer;
     } catch (error: any) {
       console.error(error);
       throw new Error(error);
@@ -163,21 +168,66 @@ class OpenSea {
 
   /**
    * @description Get an asset by tokenId and tokenAddress
-   * @param tokenId The tokenId of the asset
-   * @param tokenAddress The address of the token
+   * @param params.tokenId The tokenId of the asset
+   * @param params.tokenAddress The address of the token
    */
-  getAsset = async (tokenId: string, tokenAddress: string) => {
+  getAsset = async (params: {
+    tokenId: string | number;
+    tokenAddress: string;
+  }) => {
     try {
       const { data } = await axios({
         method: 'GET',
-        url: `${this.baseurl}/asset/${tokenAddress}/${tokenId}`,
+        url: `${this.baseurl}/asset/${params.tokenAddress}/${params.tokenId}`,
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          // 'X-API-KEY': config.OPENSEA_API_KEY,
+          'X-API-KEY': config.OPENSEA_API_KEY,
         },
       });
       console.log({ data });
+      return data;
+    } catch (error: any) {
+      console.error(error);
+      throw new Error(error);
+    }
+  };
+
+  /**
+   * @description Get assets
+   * @param page The page number
+   * @param per_page The number of items per page
+   */
+  getAssets = async (tokenAddress: string, page = 0, per_page = 1) => {
+    try {
+      let assets: Array<any> = [];
+      // for (let tokenId = 0; tokenId < per_page; tokenId++) {
+      //   try {
+      //     let results = await this.getAsset({
+      //       tokenAddress,
+      //       tokenId:
+      //         '66406747123743156841746366950152533278033835913591691491127082341586364792833',
+      //     });
+
+      //     assets = [...assets, results];
+      //     await sleep(10_000);
+      //   } catch (err) {
+      //     console.log(err);
+      //   }
+      // }
+      const { data } = await axios({
+        method: 'GET',
+        url: `${this.baseurl}/assets`,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-API-KEY': config.OPENSEA_API_KEY,
+        },
+        params: {
+          collection: 'lvcidiaavatars',
+        },
+      });
+
       return data;
     } catch (error: any) {
       console.error(error);
