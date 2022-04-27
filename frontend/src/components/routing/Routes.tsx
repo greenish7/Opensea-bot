@@ -1,11 +1,19 @@
 import { Routes as Switch, Route } from "react-router-dom";
 
-import Home from "../../pages/Home";
+import {
+  MyCollectionPage,
+  CollectionPage,
+  HomePage,
+  SearchPage,
+} from "../../pages";
 
 export const Routes = () => {
   return (
     <Switch>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<HomePage />} />
+      <Route path="/mycollections" element={<MyCollectionPage />} />
+      <Route path="/collection/:id" element={<CollectionPage />} />
+      <Route path="/search" element={<SearchPage />} />
       <Route
         path="*"
         element={

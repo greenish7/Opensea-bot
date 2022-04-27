@@ -17,8 +17,13 @@ const axios = new Axios({
   },
 });
 
+// OPENSEA_BASE_URL
+const REACT_APP_OPENSEA_API_BASE_URL = "https://api.opensea.io/api/v1";
+const REACT_APP_OPENSEA_BASE_URL = "https://opensea.io";
 export const config = {
   ...defaultConfig,
   REACT_APP_SOCKET_URL,
   axios,
+  REACT_APP_OPENSEA_API_BASE_URL,
+  REACT_APP_OPENSEA_BASE_URL,
 };

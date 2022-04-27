@@ -1,24 +1,29 @@
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import Drawer from "./Drawer";
+import { MainDrawer, FilterDrawer } from "./drawers";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 function Layout({ children }: LayoutProps) {
+  const path = useLocation();
   return (
     <>
-      <Drawer />
+      {path.pathname.startsWith("/collection") ? (
+        <FilterDrawer />
+      ) : (
+        <MainDrawer />
+      )}
       <Main>{children}</Main>
     </>
   );
 }
 
 const Main = styled.main`
-  width: 100vw;
   justify-content: center;
   align-items: center;
-  padding-top: 0.3rem;
+  margin-right: 15.625rem;
 `;
 
 export default Layout;
