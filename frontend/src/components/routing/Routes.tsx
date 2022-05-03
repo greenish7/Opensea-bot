@@ -5,6 +5,7 @@ import {
   CollectionPage,
   HomePage,
   SearchPage,
+  SettingsPage,
 } from "../../pages";
 
 export const Routes = () => {
@@ -14,6 +15,7 @@ export const Routes = () => {
       <Route path="/mycollections" element={<MyCollectionPage />} />
       <Route path="/collection/:id" element={<CollectionPage />} />
       <Route path="/search" element={<SearchPage />} />
+      <Route path="/settings" element={<SettingsPage />} />
       <Route
         path="*"
         element={

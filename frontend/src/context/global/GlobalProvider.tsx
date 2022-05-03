@@ -9,9 +9,16 @@ export const GlobalProvider = ({
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [id, setId] = useState<string | null>(null);
+  const [selectedWallet] = useState<string>(
+    localStorage?.getItem("selectedWallet") || "backend"
+  );
   const [userName, setUserName] = useState<string | null>(null);
   const [address, setAddress] = useState<string | null>(null);
   const [collections, setCollections] = useState<ICollection[]>([]);
+
+  const setSelectedWallet = (value: string) => {
+    localStorage.setItem("selectedWallet", value);
+  };
 
   return (
     <GlobalContext.Provider
@@ -26,6 +33,8 @@ export const GlobalProvider = ({
         setAddress,
         collections,
         setCollections,
+        selectedWallet,
+        setSelectedWallet,
       }}
     >
       {children}

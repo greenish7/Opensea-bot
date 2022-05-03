@@ -49,13 +49,15 @@ export function FilterDrawer() {
           onKeyDown={toggleDrawer(false)}
         >
           <List>
-            <ListItem button key="Filters">
+            <ListItem
+              button
+              key="Filters"
+              onClick={() => {
+                navigate(-1);
+              }}
+            >
               <ListItemIcon>
-                <ArrowBackIos
-                  onClick={() => {
-                    navigate(-1);
-                  }}
-                />
+                <ArrowBackIos />
               </ListItemIcon>
               <ListItemText primary="Filters" />
             </ListItem>
