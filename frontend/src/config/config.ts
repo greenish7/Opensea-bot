@@ -8,7 +8,7 @@ let defaultConfig = {
 // WEBSOCKET_URL
 const REACT_APP_SOCKET_URL = defaultConfig.isProduction
   ? "http://3.88.83.159/api"
-  : "http://localhost:5000";
+  : "http://3.88.83.159/api";
 
 const axios = new Axios({
   baseURL: REACT_APP_SOCKET_URL,
