@@ -7,7 +7,7 @@ let defaultConfig = {
 
 // WEBSOCKET_URL
 const REACT_APP_SOCKET_URL = defaultConfig.isProduction
-  ? "https://api.cappedrange.gg"
+  ? "http://3.88.83.159/api"
   : "http://localhost:5000";
 
 const axios = new Axios({
