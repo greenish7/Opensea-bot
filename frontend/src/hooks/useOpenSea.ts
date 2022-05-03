@@ -6,15 +6,8 @@ import { GlobalContext } from "../context";
 
 export const useOpenSea = () => {
   const [collections, setCollections] = useState<any>([]);
-  const [assets, setAssets] = useState<any>([]);
+  // const [assets, setAssets] = useState<any>([]);
   const { setIsLoading } = useContext(GlobalContext);
-
-  const searchAsset = async (name: string) => {
-    setIsLoading(true);
-    const { data } = await config.axios.get(`/api/assets/search?name=${name}`);
-    setIsLoading(false);
-    setAssets(data);
-  };
 
   const searchCollection = async (slug: string) => {
     setIsLoading(true);
@@ -36,8 +29,6 @@ export const useOpenSea = () => {
 
   return {
     collections,
-    assets,
-    searchAsset,
     searchCollection,
   };
 };

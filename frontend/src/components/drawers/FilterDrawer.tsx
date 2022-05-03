@@ -16,8 +16,13 @@ import {
   AcUnitOutlined,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { ICollection } from "../../types";
 
-export function FilterDrawer() {
+export function FilterDrawer({
+  collection,
+}: {
+  collection: ICollection | null;
+}) {
   const [isOpen, setIsOpen] = useState(true);
   const navigate = useNavigate();
 

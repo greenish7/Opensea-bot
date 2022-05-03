@@ -1,1 +1,1 @@
-export * from './0xmni';
+export * from './opensea';
