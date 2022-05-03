@@ -33,10 +33,6 @@ const AssetSchema = new Schema<IAsset, AssetModel>(
       type: Number,
       required: true,
     },
-    monitored: {
-      type: Boolean,
-      default: false,
-    },
   },
   {
     toJSON: {

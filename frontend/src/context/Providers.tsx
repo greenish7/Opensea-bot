@@ -3,8 +3,7 @@ import { GlobalProvider } from "./global";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { colors } from "../styles/colors";
-import { ZeroProvider } from "./zeroOmni";
-import { WebSocketProvider } from "./websocket";
+import { ZeroProvider } from "./zero/ZeroProvider";
 
 export const Providers = ({
   children,
@@ -16,9 +15,7 @@ export const Providers = ({
       <BrowserRouter>
         <GlobalProvider>
           <AuthProvider>
-            <WebSocketProvider>
-              <ZeroProvider>{children}</ZeroProvider>
-            </WebSocketProvider>
+            <ZeroProvider>{children}</ZeroProvider>
           </AuthProvider>
         </GlobalProvider>
       </BrowserRouter>

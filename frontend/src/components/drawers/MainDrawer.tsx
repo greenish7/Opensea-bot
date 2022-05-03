@@ -74,7 +74,6 @@ export function MainDrawer() {
               </ListItemIcon>
               <ListItemText primary="Trending" />
             </ListItem>
-            <Divider />
             <ListItem
               button
               key="Search"

@@ -1,9 +1,13 @@
 import axios from 'axios';
-import { config } from '../../config';
+import { config } from '../../../config';
 import { OpenSeaPort, Network } from 'opensea-js';
 import * as Web3 from 'web3';
 import { WyvernSchemaName } from 'opensea-js/lib/types';
-import { sleep } from '../helpers';
+
+/// @dev sleep function
+export const sleep = async (ms: number) => {
+  await new Promise((resolve) => setTimeout(resolve, ms));
+};
 
 /**
  * @title OpenSea
@@ -191,56 +195,44 @@ class OpenSea {
 
   /**
    * @description Get assets
-   * @param filters.count The number of assets to return
-   * @param filters.collection The collection to filter by
-   * @param filters.limit The number of assets to return
+   * @param page The page number
+   * @param per_page The number of items per page
    */
-  getAssets = async (filters: {
-    count: number;
-    collection: string;
-    limit: number;
-  }) => {
-    const { count, limit, collection } = filters;
-    let _assets: Array<any> = [];
+  getAssets = async (tokenAddress: string, page = 0, per_page = 1) => {
     try {
-      let cursor: string | null = 'cursor';
-      while (cursor) {
-        cursor = cursor === 'cursor' ? null : cursor;
+      let assets: Array<any> = [];
+      // for (let tokenId = 0; tokenId < per_page; tokenId++) {
+      //   try {
+      //     let results = await this.getAsset({
+      //       tokenAddress,
+      //       tokenId:
+      //         '66406747123743156841746366950152533278033835913591691491127082341586364792833',
+      //     });
 
-        console.log({
-          collection,
-          limit,
-          order_direction: 'desc',
-          cursor,
-        });
+      //     assets = [...assets, results];
+      //     await sleep(10_000);
+      //   } catch (err) {
+      //     console.log(err);
+      //   }
+      // }
+      const { data } = await axios({
+        method: 'GET',
+        url: `${this.baseurl}/assets`,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-API-KEY': config.OPENSEA_API_KEY,
+        },
+        params: {
+          collection: 'lvcidiaavatars',
+        },
+      });
 
-        const { data }: any = await axios({
-          method: 'GET',
-          url: `${this.baseurl}/assets`,
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-API-KEY': config.OPENSEA_API_KEY,
-          },
-          params: {
-            collection,
-            order_direction: 'desc',
-            limit,
-            cursor,
-          },
-        });
-        let { assets, next } = data;
-        cursor = next;
-        _assets = _assets.concat(assets);
-        ///@NOTE make two requests every second
-        await sleep(500);
-      }
+      return data;
     } catch (error: any) {
       console.error(error);
-      // throw new Error(error);
+      throw new Error(error);
     }
-    console.log({ _assets });
-    return _assets;
   };
 }
 
