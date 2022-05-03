@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   Divider,
   List,
@@ -8,6 +8,7 @@ import {
   SwipeableDrawer,
   Box,
   Stack,
+  Button,
 } from "@mui/material";
 import {
   Category,
@@ -16,10 +17,20 @@ import {
   AcUnitOutlined,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { ICollection } from "../../types";
+import { ZeroContext } from "../../context";
 
-export function FilterDrawer() {
+export function FilterDrawer({
+  collection,
+}: {
+  collection: ICollection | null;
+}) {
   const [isOpen, setIsOpen] = useState(true);
+  const { selectedAssets } = useContext(ZeroContext);
+  // const { isLoading } = useContext(GlobalContext);
   const navigate = useNavigate();
+
+  const count = collection?.stats["count"] || 0;
 
   const toggleDrawer = (open: boolean) => (event: any) => {
     if (
@@ -33,6 +44,11 @@ export function FilterDrawer() {
     setIsOpen(open);
   };
 
+  const handleOnAssetSubmit = () => {
+    try {
+    } catch (error) {}
+  };
+
   return (
     <SwipeableDrawer
       anchor="right"
@@ -41,27 +57,34 @@ export function FilterDrawer() {
       onOpen={toggleDrawer(true)}
       variant="permanent"
     >
-      <Stack justifyContent="space-between">
+      <Stack>
         <Box
           sx={{ width: 250 }}
           role="presentation"
           onClick={toggleDrawer(false)}
           onKeyDown={toggleDrawer(false)}
         >
-          <List>
-            <ListItem
-              button
-              key="Filters"
-              onClick={() => {
-                navigate(-1);
-              }}
-            >
-              <ListItemIcon>
-                <ArrowBackIos />
-              </ListItemIcon>
-              <ListItemText primary="Filters" />
-            </ListItem>
-          </List>
+          <Stack
+            direction="row"
+            mt={1.7}
+            mb={1.7}
+            ml={0.85}
+            mr={0.85}
+            spacing={0.8}
+            justifyContent="space-between"
+          >
+            <Box alignSelf="center"> count: {count} </Box>
+            <Box alignSelf="center"> selected: {selectedAssets.size} </Box>
+            {
+              <Button
+                variant="text"
+                disabled={selectedAssets.size < 1}
+                onClick={handleOnAssetSubmit}
+              >
+                Submit
+              </Button>
+            }
+          </Stack>
           <Divider />
           <List>
             <ListItem button key="Price">

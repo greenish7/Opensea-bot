@@ -1,8 +1,8 @@
-import { ChangeEvent, FormEvent, useContext } from "react";
+import { ChangeEvent, useContext } from "react";
 import { styled, alpha } from "@mui/material/styles";
 import { Box, AppBar, Toolbar, InputBase } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
-import { GlobalContext, ZeroContext } from "../context";
+import { ZeroContext } from "../context";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -52,30 +52,30 @@ export function SearchAppBar({
 }: {
   category: "collection" | "asset";
 }) {
-  const { searchCollection, searchAsset } = useContext(ZeroContext);
+  const { searchCollection, searchCollectionValue, setSearchCollectionValue } =
+    useContext(ZeroContext);
 
   const handleChange = async (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     e.preventDefault();
-    let value = e.target.value || "";
+    let value = e.target.value.trim();
 
-    if (value.trim()) {
-      if (value.startsWith("http")) {
-        value = value.split("/").pop() || "";
-      }
+    if (value.startsWith("http")) {
+      value = value.split("/").pop() || "";
+    }
 
-      // search collection
-      if (category === "collection") {
-        value && searchCollection(value);
-      } else if (category === "asset") {
-        value && searchAsset(value);
-      }
+    // search collection
+    if (category === "collection") {
+      setSearchCollectionValue(value);
+      searchCollectionValue && searchCollection(searchCollectionValue);
+    } else if (category === "asset") {
+      // value && searchAsset(value);
     }
   };
   return (
     <Box>
-      <AppBar position="static" color="default" enableColorOnDark>
+      <AppBar position="fixed" color="default" enableColorOnDark>
         <Toolbar>
           <Search>
             <SearchIconWrapper>
@@ -83,7 +83,9 @@ export function SearchAppBar({
             </SearchIconWrapper>
             {category === "collection" && (
               <StyledInputBase
-                placeholder="Search collection by name or slug"
+                placeholder={
+                  searchCollectionValue || "Search collection by name or slug"
+                }
                 inputProps={{ "aria-label": "search" }}
                 onChange={(e) => handleChange(e)}
               />
@@ -98,6 +100,7 @@ export function SearchAppBar({
           </Search>
         </Toolbar>
       </AppBar>
+      <Toolbar />
     </Box>
   );
 }

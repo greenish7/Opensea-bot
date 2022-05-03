@@ -1,5 +1,7 @@
+import { useContext } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
+import { ZeroContext } from "../context";
 import { MainDrawer, FilterDrawer } from "./drawers";
 
 interface LayoutProps {
@@ -8,10 +10,11 @@ interface LayoutProps {
 
 function Layout({ children }: LayoutProps) {
   const path = useLocation();
+  const { selectedCollection } = useContext(ZeroContext);
   return (
     <>
       {path.pathname.startsWith("/collection") ? (
-        <FilterDrawer />
+        <FilterDrawer collection={selectedCollection} />
       ) : (
         <MainDrawer />
       )}
